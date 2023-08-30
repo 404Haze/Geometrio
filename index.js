@@ -73,8 +73,35 @@ const x = canvas.width / 2;
 const y = canvas.height / 2;
 
 const player = new Player(x, y, 30, "blue");
-
 const projectiles = [];
+const enemies = [];
+
+function spawnEnemies() {
+    setInterval(() => {
+        const radius = Math.random() * (30 - 5) + 5;
+        let x;
+        let y;
+
+        if (Math.random() < 0.5) {
+            x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+            y = Math.random() * canvas.height;
+        }
+        else {
+            x = Math.random() * canvas.width;
+            y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
+        }
+
+        const color = "green";
+        const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x);
+    
+        const velocity = {
+            x: Math.cos(angle),
+            y: Math.sin(angle)
+        }
+
+        enemies.push(new Enemy(x, y, radius, color, velocity));
+    }, 1000);
+}
 
 function animate(){
     requestAnimationFrame(animate);
@@ -82,6 +109,10 @@ function animate(){
     player.draw();
     projectiles.forEach(projectile => {
         projectile.update()
+    });
+
+    enemies.forEach(enemy => {
+        enemy.update();
     });
 }
 
@@ -99,8 +130,8 @@ window.addEventListener("click", (event) => {
 
 
 
- animate();
-
+animate();
+spawnEnemies();
 
 
 
