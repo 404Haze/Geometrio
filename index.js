@@ -91,13 +91,9 @@ function spawnEnemies() {
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
         }
 
-        const color = "green";
+        const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x);
-    
-        const velocity = {
-            x: Math.cos(angle),
-            y: Math.sin(angle)
-        }
+        const velocity = {x: Math.cos(angle), y: Math.sin(angle)};
 
         enemies.push(new Enemy(x, y, radius, color, velocity));
     }, 1000);
@@ -108,7 +104,7 @@ let animationID;
 function animate(){
     animationID = requestAnimationFrame(animate);
     c.fillStyle = 'rgba(0, 0, 0, 0.1)'
-    c.fillRect(0, 0, canvas.width, canvas.height);//0.18
+    c.fillRect(0, 0, canvas.width, canvas.height);
     player.draw();
     projectiles.forEach((projectile, index) => {
         projectile.update()
@@ -131,11 +127,20 @@ function animate(){
 
         projectiles.forEach((projectile, projectileIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
+
             if (dist - enemy.radius - projectile.radius < 1) {
-                setTimeout(() => {
-                    enemies.splice(index, 1);
-                    projectiles.splice(projectileIndex, 1);
-                }, 0);
+                if (enemy.radius - 10 > 10) {
+                    //enemy.radius -= 10;
+                    gsap.to(enemy, {radius: enemy.radius - 10});
+                    setTimeout(() => {
+                        projectiles.splice(projectileIndex, 1);
+                    }, 0);
+                } else {
+                    setTimeout(() => {
+                        enemies.splice(index, 1);
+                        projectiles.splice(projectileIndex, 1);
+                    }, 0);
+                }
             }
         });
     });
@@ -144,12 +149,9 @@ function animate(){
 window.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
     //console.log(projectiles);
-    const velocity = {
-        x: Math.cos(angle),
-        y: Math.sin(angle)
-    }
+    const velocity = {x: Math.cos(angle) * 4, y: Math.sin(angle) * 4};
 
-    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, "red", velocity));
+    projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, "white", velocity));
  });
 
 
