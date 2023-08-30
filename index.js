@@ -72,7 +72,7 @@ class Enemy {
 const x = canvas.width / 2;
 const y = canvas.height / 2;
 
-const player = new Player(x, y, 30, "blue");
+const player = new Player(x, y, 10, "white");
 const projectiles = [];
 const enemies = [];
 
@@ -107,10 +107,17 @@ let animationID;
 
 function animate(){
     animationID = requestAnimationFrame(animate);
-    c.clearRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = 'rgba(0, 0, 0, 0.1)'
+    c.fillRect(0, 0, canvas.width, canvas.height);//0.18
     player.draw();
-    projectiles.forEach(projectile => {
+    projectiles.forEach((projectile, index) => {
         projectile.update()
+
+        if (projectile.x + projectile.radius < 0 || projectile.x - projectile.radius > canvas.width || projectile.y + projectile.radius < 0 || projectile.y - projectile.radius > canvas.height) {
+            setTimeout(() => {
+                projectiles.splice(index, 1);
+            }, 0);
+        }
     });
 
     enemies.forEach((enemy, index) => {
@@ -136,7 +143,7 @@ function animate(){
 
 window.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
-    
+    //console.log(projectiles);
     const velocity = {
         x: Math.cos(angle),
         y: Math.sin(angle)
