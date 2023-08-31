@@ -1,4 +1,0 @@
-Player
-Projectile attacks
-Enemies
-Enemy health
