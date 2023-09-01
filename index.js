@@ -1,6 +1,9 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
+
 const scoreEl = document.querySelector("#scoreEl");
+const modalEl = document.querySelector("#modalEl");
+const modalScoreEl = document.querySelector("#modalScoreEl");
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -162,8 +165,11 @@ function animate(){
         enemy.update();
         const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y);
 
+        // End the game.
         if (dist - enemy.radius - player.radius < 1) {
             cancelAnimationFrame(animationID)
+            modalEl.style.display = "block";
+            modalScoreEl.innerHTML = "Total Points: " + score;
         }
 
         for (let projectileIndex = projectiles.length - 1; projectileIndex >= 0; projectileIndex--) {

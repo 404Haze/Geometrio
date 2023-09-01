@@ -1,3 +1,6 @@
+# Mac file location data
+.DS_Store
+
 # Logs
 logs
 *.log

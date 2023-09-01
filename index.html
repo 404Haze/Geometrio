@@ -1,11 +1,37 @@
 <style>
     body {
     margin: 0;
+    font-family: sans-serif; 
     }
 </style>
-<div style = "position: absolute; color: white; padding: 8px; font-family: sans-serif; user-select: none;">
+<div style = "
+    position: absolute; 
+    color: white; 
+    padding: 8px; 
+    user-select: none;
+">
     <span>Score: <span id = "scoreEl">0</span></span>
 </div>
+
+<div id = "modalEL"
+    style = "
+        display: none;
+        position: absolute;
+        background-color: white;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        padding: 16px;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        border-radius: 5px;
+    ">
+    <h1 style = "font-size: 40px;">Game Over</h1>
+    <h1 id = "modalScoreEl" style = "font-size: 20px;">0</h1>
+</div>
+
+
 <canvas></canvas>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src = "./index.js"></script>
