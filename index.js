@@ -4,6 +4,7 @@ const c = canvas.getContext("2d");
 const scoreEl = document.querySelector("#scoreEl");
 const modalEl = document.querySelector("#modalEl");
 const modalScoreEl = document.querySelector("#modalScoreEl");
+const buttonEl = document.querySelector("#buttonEl");
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -104,13 +105,25 @@ class Particle {
 const x = canvas.width / 2;
 const y = canvas.height / 2;
 
-const player = new Player(x, y, 10, "white");
-const projectiles = [];
-const enemies = [];
-const particles = [];
+let player = new Player(x, y, 10, "white");
+let projectiles = [];
+let enemies = [];
+let particles = [];
+let animationID;
+let intervalID;
+let score = 0;
+
+function init() {
+    player = new Player(x, y, 10, "white");
+    projectiles = [];
+    enemies = [];
+    particles = [];
+    animationID;
+    score = 0;
+}
 
 function spawnEnemies() {
-    setInterval(() => {
+    intervalID = setInterval(() => {
         const radius = Math.random() * (30 - 5) + 5;
         let x;
         let y;
@@ -131,9 +144,6 @@ function spawnEnemies() {
         enemies.push(new Enemy(x, y, radius, color, velocity));
     }, 1000);
 }
-
-let animationID;
-let score = 0;
 
 function animate(){
     animationID = requestAnimationFrame(animate);
@@ -167,7 +177,8 @@ function animate(){
 
         // End the game.
         if (dist - enemy.radius - player.radius < 1) {
-            cancelAnimationFrame(animationID)
+            cancelAnimationFrame(animationID);
+            clearInterval(intervalID);
             modalEl.style.display = "block";
             modalScoreEl.innerHTML = "Total Points: " + score;
         }
@@ -205,13 +216,18 @@ function animate(){
 
 window.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
-    //console.log(projectiles);
     const velocity = {x: Math.cos(angle) * 4, y: Math.sin(angle) * 4};
 
     projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, "white", velocity));
  });
 
-
+buttonEl.addEventListener("click", () => {
+    init();
+    animate();
+    spawnEnemies();
+    scoreEl.innerHTML = score;
+    modalEl.style.display = "none";
+});
 
 
 animate();
