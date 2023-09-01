@@ -1,3 +1,4 @@
+// Declarations
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
@@ -115,6 +116,7 @@ let animationID;
 let intervalID;
 let score = 0;
 
+// Game initializer. 
 function init() {
     player = new Player(x, y, 10, "white");
     projectiles = [];
@@ -124,6 +126,7 @@ function init() {
     score = 0;
 }
 
+// Enemy spawner.
 function spawnEnemies() {
     intervalID = setInterval(() => {
         const radius = Math.random() * (30 - 5) + 5;
@@ -139,6 +142,7 @@ function spawnEnemies() {
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
         }
 
+        // Enemy properties.
         const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x);
         const velocity = {x: Math.cos(angle), y: Math.sin(angle)};
@@ -147,6 +151,7 @@ function spawnEnemies() {
     }, 1000);
 }
 
+// Game animation.
 function animate(){
     animationID = requestAnimationFrame(animate);
     c.fillStyle = 'rgba(0, 0, 0, 0.1)'
@@ -167,6 +172,7 @@ function animate(){
         const projectile = projectiles[index];
         projectile.update()
 
+        // Remove offscreen projectiles.
         if (projectile.x + projectile.radius < 0 || projectile.x - projectile.radius > canvas.width || projectile.y + projectile.radius < 0 || projectile.y - projectile.radius > canvas.height) {
             projectiles.splice(index, 1);
         }
@@ -181,18 +187,23 @@ function animate(){
         if (dist - enemy.radius - player.radius < 1) {
             cancelAnimationFrame(animationID);
             clearInterval(intervalID);
+
+            // Game over popup animation.
             modalEl.style.display = "block";
+            gsap.fromTo("#ModalEl", {scale: 0.8, opacity: 0}, {
+                scale: 1,
+                opacity: 1,
+                ease: "expo"
+            });
+
             modalScoreEl.innerHTML = "Total Points: " + score;
         }
 
         for (let projectileIndex = projectiles.length - 1; projectileIndex >= 0; projectileIndex--) {
             const projectile = projectiles[projectileIndex];
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
-            
-            // If projectile touches enemy.
+ 
             if (dist - enemy.radius - projectile.radius < 1) {
-                
-                // Add explosions.
                 for (let i = 0; i < enemy.radius * 2; i++) {
                     particles.push(new Particle(projectile.x, projectile.y, Math.random() * 2, enemy.color, {x: (Math.random() - 0.5) * (Math.random() * 5), y: (Math.random() - 0.5) * (Math.random() * 5)}));
                 }
@@ -216,6 +227,7 @@ function animate(){
     }
 }
 
+// Create projectiles.
 window.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
     const velocity = {x: Math.cos(angle) * 4, y: Math.sin(angle) * 4};
@@ -223,20 +235,42 @@ window.addEventListener("click", (event) => {
     projectiles.push(new Projectile(canvas.width / 2, canvas.height / 2, 5, "white", velocity));
  });
 
+// Reinitialize the game.
 buttonEl.addEventListener("click", () => {
     init();
     animate();
     spawnEnemies();
     scoreEl.innerHTML = score;
-    modalEl.style.display = "none";
+
+    // Game over popup close modal.
+    gsap.to("#modalEl", {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.2,
+        ease: "expo.in",
+        onComplete: () => {
+            modalEl.style.display = "none";
+        }
+    });
 });
 
+// Initialize the game.
 startButtonEl.addEventListener("click", () => {
     init();
     animate();
     spawnEnemies();
     scoreEl.innerHTML = score;
-    startModalEl.style.display = "none";
+    
+    // Animate start modal.
+    gsap.to("#startModalEl", {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.2,
+        ease: "expo.in",
+        onComplete: () => {
+            startModalEl.style.display = "none";
+        }
+    });
 });
 
 
